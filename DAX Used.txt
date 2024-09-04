@@ -1,0 +1,41 @@
+Revenue = 'ccdb cc_detail'[Annual_Fees] + 'ccdb cc_detail'[Total_Trans_Amt] + 'ccdb cc_detail'[Interest_Earned]
+
+current_week_revenue = CALCULATE(
+    SUM('ccdb cc_detail'[Revenue]),
+    FILTER(
+        ALL('ccdb cc_detail'),
+        'ccdb cc_detail'[week_num2] = MAX('ccdb cc_detail'[week_num2])))
+
+
+previous_week_revenue = CALCULATE(
+    SUM('ccdb cc_detail'[Revenue]),
+    FILTER(
+        ALL('ccdb cc_detail'),
+        'ccdb cc_detail'[week_num2] = MAX('ccdb cc_detail'[week_num2])-1))
+
+week_num2 = WEEKNUM('ccdb cc_detail'[Week_Start_Date])
+
+wow_revenue = DIVIDE(([current_week_revenue] - [previous_week_revenue]), [previous_week_revenue])
+
+
+
+Age Group = SWITCH(
+    True(),
+    'ccdb customer'[Customer_Age]<30, "20-30",
+    'ccdb customer'[Customer_Age] >= 30 && 'ccdb customer'[Customer_Age] < 40 , "30-40",
+    'ccdb customer'[Customer_Age] >= 40 && 'ccdb customer'[Customer_Age] < 50 , "40-50",
+    'ccdb customer'[Customer_Age] >= 50 && 'ccdb customer'[Customer_Age] < 60 , "50-60",
+    'ccdb customer'[Customer_Age] >=60, "60+",
+    "unknown"
+)
+
+
+Income Group = SWITCH(
+    True(),
+    'ccdb customer'[Income] < 35000, "Low",
+    'ccdb customer'[Income] >=35000 && 'ccdb customer'[Income]<=70000, "Med",
+    'ccdb customer'[Income] >=70000, "High",
+    "unknown"
+)
+
+
